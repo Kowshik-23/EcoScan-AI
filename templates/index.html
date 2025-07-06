@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EcoScan AI - Professional Waste Sorting</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        :root {
+            --primary-green: #004d40; /* Dark Teal */
+            --secondary-green: #00796b; /* Teal */
+            --accent-blue: #0277bd; /* Light Blue */
+            --background-start: #e0f2f1; /* Pale Cyan */
+            --background-end: #e8eaf6; /* Pale Indigo */
+            --text-color: #212121;
+            --card-bg: rgba(255, 255, 255, 0.6);
+            --card-border: rgba(255, 255, 255, 0.9);
+            --shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
+        }
+
+        * {
+            box-sizing: border-box;
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            color: var(--text-color);
+            margin: 0;
+            padding: 40px 20px;
+            background: linear-gradient(-45deg, var(--background-start), var(--background-end), #e1f5fe, #f1f8e9);
+            background-size: 400% 400%;
+            animation: gradientBG 25s ease infinite;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1100px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        header h1 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 3em;
+            color: var(--primary-green);
+            font-weight: 700;
+            margin: 0;
+            letter-spacing: -1px;
+        }
+
+        header h1 .icon {
+            color: var(--secondary-green);
+        }
+
+        header p {
+            font-size: 1.2em;
+            color: #555;
+            max-width: 600px;
+            margin: 10px auto 0;
+        }
+
+        .uploader-section {
+            background: var(--card-bg);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--card-border);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        #upload-form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 25px;
+        }
+
+        #image-upload-label {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            height: 250px;
+            border: 3px dashed rgba(0, 0, 0, 0.1);
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        #image-upload-label:hover {
+            border-color: var(--secondary-green);
+            background-color: rgba(255, 255, 255, 0.3);
+        }
+
+        #image-upload-label.has-file {
+            border-style: solid;
+            border-color: var(--secondary-green);
+        }
+
+        #image-preview {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: none; /* Hidden by default */
+            position: absolute;
+        }
+
+        .upload-icon {
+            font-size: 4em;
+            color: var(--secondary-green);
+            transition: transform 0.3s ease;
+        }
+
+        #image-upload-label:hover .upload-icon {
+            transform: scale(1.1);
+        }
+
+        .upload-text {
+            color: #555;
+            margin-top: 15px;
+            font-weight: 600;
+        }
+
+        #waste_image { display: none; }
+
+        #submit-btn {
+            background: linear-gradient(45deg, var(--secondary-green), var(--primary-green));
+            color: white;
+            border: none;
+            padding: 18px 50px;
+            border-radius: 50px;
+            font-size: 1.2em;
+            font-weight: 600;
+            font-family: 'Montserrat', sans-serif;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0, 121, 107, 0.4);
+        }
+
+        #submit-btn:disabled {
+            background: #bdbdbd;
+            box-shadow: none;
+            cursor: not-allowed;
+        }
+
+        #submit-btn:not(:disabled):hover {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 8px 25px rgba(0, 121, 107, 0.5);
+        }
+
+        #loading-spinner {
+            border: 5px solid rgba(0,0,0,0.1);
+            border-top: 5px solid var(--accent-blue);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            display: none; /* Hidden by default */
+        }
+
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        .submissions-grid {
+            margin-top: 50px;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 30px;
+        }
+
+        .submission-card {
+            background: var(--card-bg);
+            border-radius: 20px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--card-border);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .submission-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 35px rgba(31, 38, 135, 0.2);
+        }
+
+        .card-image-container {
+            width: 100%;
+            height: 250px;
+            overflow: hidden;
+        }
+
+        .card-image-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.4s ease;
+        }
+
+        .submission-card:hover .card-image-container img {
+            transform: scale(1.05);
+        }
+
+        .card-content {
+            padding: 25px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .card-content h3 {
+            font-family: 'Montserrat', sans-serif;
+            margin: 0 0 15px 0;
+            color: var(--primary-green);
+            font-size: 1.5em;
+        }
+
+        .card-content p {
+            margin: 5px 0 15px;
+            line-height: 1.7;
+            flex-grow: 1;
+        }
+
+        .locations-list {
+            list-style-type: none;
+            padding-left: 0;
+            font-size: 0.9em;
+        }
+
+        .locations-list li {
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(0,0,0,0.08);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .locations-list li:last-child { border-bottom: none; }
+        .locations-list .icon { color: var(--secondary-green); }
+
+        .analyzing-text {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-weight: 600;
+            color: var(--accent-blue);
+            font-size: 1.2em;
+        }
+
+        /* --- STYLE FOR THE NEW FALLBACK BUTTON --- */
+        .map-button {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 12px 25px;
+            background: var(--accent-blue);
+            color: white;
+            text-decoration: none;
+            border-radius: 50px;
+            text-align: center;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        .map-button:hover {
+            background-color: #01579b;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(2, 119, 189, 0.3);
+        }
+        /* --- END OF NEW STYLE --- */
+
+        footer {
+            width: 100%;
+            max-width: 1100px;
+            margin-top: 80px;
+            padding: 30px;
+            text-align: center;
+            border-top: 1px solid rgba(0,0,0,0.1);
+        }
+
+        .footer-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .footer-contact strong {
+            color: var(--primary-green);
+        }
+
+        .footer-socials a {
+            color: var(--secondary-green);
+            font-size: 1.8em;
+            margin: 0 15px;
+            transition: color 0.3s ease;
+        }
+
+        .footer-socials a:hover {
+            color: var(--primary-green);
+        }
+
+        .footer-copyright {
+            margin-top: 20px;
+            font-size: 0.9em;
+            color: #777;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <h1><i class="fa-solid fa-recycle icon"></i> EcoScan <span>AI</span></h1>
+            <p>Transforming waste management with artificial intelligence. Just snap a photo to get instant, intelligent sorting instructions.</p>
+        </header>
+
+        <main>
+            <section class="uploader-section">
+                <form id="upload-form" action="/" method="post" enctype="multipart/form-data">
+                    <label for="waste_image" id="image-upload-label">
+                        <img id="image-preview" src="#" alt="Your image preview" />
+                        <div id="upload-prompt">
+                            <div class="upload-icon"><i class="fa-solid fa-camera-retro"></i></div>
+                            <div class="upload-text">Click or Tap Here to Scan Your Item</div>
+                        </div>
+                    </label>
+                    <input type="file" name="waste_image" id="waste_image" accept="image/*" required>
+                    <input type="hidden" name="latitude" id="latitude">
+                    <input type="hidden" name="longitude" id="longitude">
+                    <button type="submit" id="submit-btn">Analyze Waste</button>
+                </form>
+                <div id="loading-spinner" style="margin-top: 20px;"></div>
+            </section>
+
+            <section id="history" style="margin-top: 60px;">
+                <h2 style="text-align: center; font-family: 'Montserrat', sans-serif; font-size: 2em; color: var(--primary-green);">Analysis History</h2>
+                <div class="submissions-grid">
+                    <!-- AFTER (The corrected line) -->
+                    {% for sub in submissions %}
+                        <div class="submission-card">
+                            <div class="card-image-container">
+                                <img src="{{ sub.image_path }}" alt="Waste item">
+                            </div>
+                            <div class="card-content">
+                                {% if sub.status == 'Pending' %}
+                                    <div class="analyzing-text">
+                                        <div id="loading-spinner" style="display: inline-block; width: 25px; height: 25px; border-top-color: var(--primary-green);"></div>
+                                        <span>Analyzing... Please wait.</span>
+                                    </div>
+                                {% else %}
+                                    <h3><i class="fa-solid fa-check-circle"></i> {{ sub.result_action }} - {{ sub.result_item }}</h3>
+                                    <p><strong><i class="fa-solid fa-info-circle"></i> Details:</strong> {{ sub.result_details }}</p>
+
+                                    <!-- ====================================================== -->
+                                    <!-- === THIS IS THE MODIFIED LOGIC FOR LOCATIONS === -->
+                                    <!-- ====================================================== -->
+
+                                    {% if sub.result_locations and sub.result_locations|length > 0 %}
+                                        <!-- This part shows if we FOUND specific locations -->
+                                        <h4 style="margin-top: 20px; font-family: 'Montserrat', sans-serif; color: var(--primary-green);">Nearby Facilities:</h4>
+                                        <ul class="locations-list">
+                                            {% for loc in sub.result_locations %}
+                                                <li><i class="fa-solid fa-map-marker-alt icon"></i> <div><strong>{{ loc.name }}</strong><br>{{ loc.address }}</div></li>
+                                            {% endfor %}
+                                        </ul>
+                                    {% elif sub.fallback_url %}
+                                        <!-- This part shows if we did NOT find locations, but have a fallback URL -->
+                                        <a href="{{ sub.fallback_url }}" target="_blank" class="map-button">
+                                            <i class="fa-solid fa-search-location"></i> Find Facilities Near You
+                                        </a>
+                                    {% endif %}
+
+                                    <!-- ====================================================== -->
+                                    <!-- === END OF MODIFIED LOGIC === -->
+                                    <!-- ====================================================== -->
+
+                                {% endif %}
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-contact">
+                For support or inquiries, please contact us at: <strong>+91 7207553557</strong>
+            </div>
+            <div class="footer-socials">
+                <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+            </div>
+            <div class="footer-copyright">
+                © 2025 EcoScan AI. All Rights Reserved. A Greener Future, Powered by AI.
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        const uploadForm = document.getElementById('upload-form');
+        const fileInput = document.getElementById('waste_image');
+        const imageLabel = document.getElementById('image-upload-label');
+        const imagePreview = document.getElementById('image-preview');
+        const uploadPrompt = document.getElementById('upload-prompt');
+        const submitBtn = document.getElementById('submit-btn');
+        const loadingSpinner = document.getElementById('loading-spinner');
+
+        window.onload = function() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    (position) => {
+                        document.getElementById('latitude').value = position.coords.latitude;
+                        document.getElementById('longitude').value = position.coords.longitude;
+                    },
+                    (error) => {
+                        console.warn(`Geolocation error (${error.code}): ${error.message}`);
+                        alert("Location access is required to find nearby facilities. Please enable it in your browser settings.");
+                    }
+                );
+            } else {
+                alert("Geolocation is not supported by this browser.");
+            }
+        };
+
+        fileInput.addEventListener('change', function() {
+            const file = this.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    imagePreview.src = e.target.result;
+                    imagePreview.style.display = 'block';
+                    uploadPrompt.style.display = 'none';
+                    imageLabel.classList.add('has-file');
+                }
+                reader.readAsDataURL(file);
+            }
+        });
+
+        uploadForm.addEventListener('submit', function(e) {
+            if (fileInput.files.length === 0) {
+                e.preventDefault(); // Stop the form from submitting
+                alert("Please select an image to analyze.");
+                return;
+            }
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Analyzing...';
+            loadingSpinner.style.display = 'block';
+        });
+    </script>
+</body>
+</html>
