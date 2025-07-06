@@ -65,4 +65,10 @@ To set up and run this project locally or in your own cloud environment, you wil
      - `SUPABASE_ANON_KEY`: Your Supabase `anon` public key.
    - Recreate the workflow steps (or import the workflow if exported) as detailed in the project's development history.
 
+## 🚀 Live Demo
+
+**You can try EcoScan AI live at:** [**https://ecoscan-ai.onrender.com**](https://ecoscan-ai.onrender.com)
+
+*Note: The free-tier instance may take 30-60 seconds to "wake up" on the first request if it has been inactive.*
+
 ---
