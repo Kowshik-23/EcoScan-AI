@@ -331,6 +331,25 @@
             font-size: 0.9em;
             color: #777;
         }
+        /* ADD THIS CSS TO YOUR <style> BLOCK */
+
+        .clear-btn {
+            background: #c0392b; /* A strong red color */
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.9em;
+            transition: background-color 0.2s ease, transform 0.2s ease;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+        .clear-btn:hover {
+            background: #e74c3c;
+            transform: translateY(-1px);
+        }
+        /* ADD THIS CSS */
     </style>
 </head>
 <body>
@@ -351,16 +370,33 @@
                             <div class="upload-text">Click or Tap Here to Scan Your Item</div>
                         </div>
                     </label>
-                    <input type="file" name="waste_image" id="waste_image" accept="image/*" required>
+                    <!-- The modified input tag -->
+                    <input type="file" name="waste_image" id="waste_image" accept="image/*" required capture="environment">
                     <input type="hidden" name="latitude" id="latitude">
                     <input type="hidden" name="longitude" id="longitude">
                     <button type="submit" id="submit-btn">Analyze Waste</button>
                 </form>
                 <div id="loading-spinner" style="margin-top: 20px;"></div>
             </section>
+            <!-- ADD THIS HTML BLOCK -->
+
+            <div id="admin-controls" style="display: none; text-align: center; margin: 20px 0;">
+                <form action="/clear-history" method="post">
+                    <button type="submit" onclick="return confirm('Are you sure you want to delete all history?');" class="clear-btn">
+                        <i class="fa-solid fa-trash"></i> Clear All History
+                    </button>
+                </form>
+            </div>
 
             <section id="history" style="margin-top: 60px;">
                 <h2 style="text-align: center; font-family: 'Montserrat', sans-serif; font-size: 2em; color: var(--primary-green);">Analysis History</h2>
+                <div style="text-align: center; margin-bottom: 20px;">
+                    <form action="/clear-history" method="post">
+                        <button type="submit" class="clear-btn" onclick="return confirm('Are you sure you want to permanently delete all history?');">
+                            <i class="fa-solid fa-trash-alt"></i> Clear All History
+                        </button>
+                    </form>
+                </div>
                 <div class="submissions-grid">
                     <!-- AFTER (The corrected line) -->
                     {% for sub in submissions %}
@@ -435,20 +471,34 @@
         const submitBtn = document.getElementById('submit-btn');
         const loadingSpinner = document.getElementById('loading-spinner');
 
+        // Replace the old window.onload function with this one
+
         window.onload = function() {
             if (navigator.geolocation) {
+                console.log("Geolocation is supported. Requesting position...");
                 navigator.geolocation.getCurrentPosition(
                     (position) => {
+                        // Success! We got the location.
+                        console.log("Location obtained:", position.coords);
                         document.getElementById('latitude').value = position.coords.latitude;
                         document.getElementById('longitude').value = position.coords.longitude;
                     },
                     (error) => {
+                        // Error! The user likely denied permission or an error occurred.
                         console.warn(`Geolocation error (${error.code}): ${error.message}`);
-                        alert("Location access is required to find nearby facilities. Please enable it in your browser settings.");
+                        // We can optionally alert the user, but we won't block the app.
+                        // The latitude and longitude fields will just remain empty.
+                    },
+                    {
+                        // Optional: Add some parameters for better mobile performance
+                        enableHighAccuracy: true,
+                        timeout: 10000, // 10 seconds to get a location
+                        maximumAge: 0 // Don't use a cached location
                     }
                 );
             } else {
-                alert("Geolocation is not supported by this browser.");
+                // Geolocation is not supported by this browser at all.
+                console.log("Geolocation is not supported by this browser.");
             }
         };
 
@@ -476,6 +526,13 @@
             submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Analyzing...';
             loadingSpinner.style.display = 'block';
         });
+        // ADD THIS JAVASCRIPT SNIPPET
+
+        // This checks if the URL has "?admin=true" at the end
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get('admin') === 'true') {
+            document.getElementById('admin-controls').style.display = 'block';
+        }
     </script>
 </body>
 </html>

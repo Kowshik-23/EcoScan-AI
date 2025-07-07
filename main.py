@@ -99,6 +99,25 @@ def index():
         submissions = []
 
     return render_template('index.html', submissions=submissions)
+# ADD THIS NEW FUNCTION TO main.py
 
+
+
+@app.route('/clear-history', methods=['POST'])
+def clear_history():
+    """
+    This route deletes all rows from the submissions table.
+    It's accessible to all users.
+    """
+    try:
+        # This Supabase command deletes all rows from the 'submissions' table.
+        # It works by matching all rows where the 'id' is not equal to a non-existent value.
+        supabase.table('submissions').delete().neq('id', -1).execute()
+        print("Successfully cleared submission history by user request.")
+    except Exception as e:
+        print(f"!!! ERROR clearing history: {e}")
+
+    # After clearing, redirect the user back to the main page.
+    return redirect(url_for('index'))
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5001)
