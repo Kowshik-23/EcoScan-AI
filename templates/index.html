@@ -33,6 +33,16 @@
 
     <!-- Font Awesome for Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <head>
+        <meta charset="UTF-8">
+        ...
+        <title>EcoScan AI...</title>
+
+        <!-- === NEW: Add the image compression library === -->
+        <script src="https://cdn.jsdelivr.net/npm/browser-image-compression@2.0.1/dist/browser-image-compression.js"></script>
+
+        <!-- Google Fonts, Font Awesome, etc. follow... -->
+    </head>
 
     <style>
         :root {
@@ -251,14 +261,63 @@
         imageLabel.addEventListener('drop', (e) => { if (e.dataTransfer.files.length > 0) handleFile(e.dataTransfer.files[0]); }, false);
 
         // Simple form submission listener
-        uploadForm.addEventListener('submit', function(e) {
+        // Replace the existing simple form submission listener with this one
+
+        uploadForm.addEventListener('submit', async function(e) {
+            e.preventDefault(); // IMPORTANT: We prevent the default submission to handle compression
+
             if (fileInput.files.length === 0) {
-                e.preventDefault();
                 alert("Please select an image to analyze.");
                 return;
             }
+
             submitBtn.disabled = true;
-            submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Analyzing...';
+            submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Compressing & Analyzing...';
+
+            const originalFile = fileInput.files[0];
+
+            // Compression options
+            const options = {
+                maxSizeMB: 1,          // Max file size in MB
+                maxWidthOrHeight: 1920,  // Max dimensions
+                useWebWorker: true,      // Use a separate thread for performance
+            }
+
+            try {
+                console.log(`Original file size: ${(originalFile.size / 1024 / 1024).toFixed(2)} MB`);
+
+                // Compress the image
+                const compressedFile = await imageCompression(originalFile, options);
+
+                console.log(`Compressed file size: ${(compressedFile.size / 1024 / 1024).toFixed(2)} MB`);
+
+                // We need to create a new FormData object to send the *compressed* file
+                const formData = new FormData();
+                formData.append('waste_image', compressedFile, originalFile.name); // Append the compressed file
+                formData.append('latitude', document.getElementById('latitude').value);
+                formData.append('longitude', document.getElementById('longitude').value);
+
+                // Now we send the compressed data to the server
+                const response = await fetch('/', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                // After the server responds, we reload the page to see the result
+                // This is the fetch-based approach we discussed before, which is more reliable
+                // when paired with the fast upload from compression.
+                if (response.ok) {
+                    window.location.reload();
+                } else {
+                    throw new Error('Server responded with an error.');
+                }
+
+            } catch (error) {
+                console.error('Compression or Upload Error:', error);
+                alert('An error occurred. Please try again.');
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = 'Analyze Waste';
+            }
         });
     </script>
 </body>
