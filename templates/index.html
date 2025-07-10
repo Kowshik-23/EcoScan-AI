@@ -1,22 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EcoScan AI - Professional Waste Sorting</title>
-    
-    <!-- ============================================= -->
-    <!-- === THIS IS THE NEW AUTO-REFRESH LOGIC === -->
-    <!-- ============================================= -->
-    {% if submissions and submissions | selectattr('status', 'equalto', 'Pending') | list | length > 0 %}
-        <!-- If there are any pending submissions, refresh the page every 15 seconds -->
-        <meta http-equiv="refresh" content="15">
-    {% endif %}
-    <!-- ============================================= -->
-
-    <!-- Google Fonts, Font Awesome, and <style> block follow... -->
-</head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>EcoScan AI - Professional Waste Sorting</title>
@@ -26,103 +10,21 @@
         <meta http-equiv="refresh" content="15">
     {% endif %}
 
-    <!-- Google Fonts -->
+    <!-- Libraries -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
-
-    <!-- Font Awesome for Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <head>
-        <meta charset="UTF-8">
-        ...
-        <title>EcoScan AI...</title>
-
-        <!-- === NEW: Add the image compression library === -->
-        <script src="https://cdn.jsdelivr.net/npm/browser-image-compression@2.0.1/dist/browser-image-compression.js"></script>
-
-        <!-- Google Fonts, Font Awesome, etc. follow... -->
-    </head>
+    
+    <!-- NEW: Image Compression Library -->
+    <script src="https://cdn.jsdelivr.net/npm/browser-image-compression@2.0.1/dist/browser-image-compression.js"></script>
 
     <style>
+        /* All your CSS styles go here. The CSS you provided before is perfect. */
         :root {
-            --primary-green: #004d40; --secondary-green: #00796b; --accent-blue: #0277bd;
-            --background-start: #e0f2f1; --background-end: #e8eaf6; --text-color: #212121;
-            --card-bg: rgba(255, 255, 255, 0.6); --card-border: rgba(255, 255, 255, 0.9);
-            --shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
+            --primary-green: #004d40; --secondary-green: #00796b; /* ...etc */
         }
-        * { box-sizing: border-box; scroll-behavior: smooth; }
-        body {
-            font-family: 'Roboto', sans-serif; color: var(--text-color); margin: 0; padding: 40px 20px;
-            background: linear-gradient(-45deg, var(--background-start), var(--background-end), #e1f5fe, #f1f8e9);
-            background-size: 400% 400%; animation: gradientBG 25s ease infinite;
-            display: flex; flex-direction: column; align-items: center;
-        }
-        @keyframes gradientBG { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
-        .container { width: 100%; max-width: 1100px; }
-        header { text-align: center; margin-bottom: 50px; }
-        header h1 { font-family: 'Montserrat', sans-serif; font-size: 3em; color: var(--primary-green); font-weight: 700; margin: 0; letter-spacing: -1px; }
-        header h1 .icon { color: var(--secondary-green); }
-        header p { font-size: 1.2em; color: #555; max-width: 600px; margin: 10px auto 0; }
-        .uploader-section {
-            background: var(--card-bg); padding: 40px; border-radius: 20px; box-shadow: var(--shadow);
-            border: 1px solid var(--card-border); backdrop-filter: blur(15px); text-align: center;
-        }
-        #upload-form { display: flex; flex-direction: column; align-items: center; gap: 25px; }
-        #image-upload-label {
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            width: 100%; height: 250px; border: 3px dashed rgba(0, 0, 0, 0.1); border-radius: 15px;
-            cursor: pointer; transition: all 0.3s ease; position: relative; overflow: hidden;
-        }
-        #image-upload-label:hover { border-color: var(--secondary-green); background-color: rgba(255, 255, 255, 0.3); }
-        #image-upload-label.has-file { border-style: solid; border-color: var(--secondary-green); }
-        #image-preview { width: 100%; height: 100%; object-fit: cover; display: none; position: absolute; }
-        .upload-icon { font-size: 4em; color: var(--secondary-green); }
-        .upload-text { color: #555; margin-top: 15px; font-weight: 600; }
-        #waste_image { display: none; }
-        #submit-btn {
-            background: linear-gradient(45deg, var(--secondary-green), var(--primary-green)); color: white; border: none;
-            padding: 18px 50px; border-radius: 50px; font-size: 1.2em; font-weight: 600; font-family: 'Montserrat', sans-serif;
-            cursor: pointer; transition: all 0.3s ease; box-shadow: 0 5px 15px rgba(0, 121, 107, 0.4);
-        }
-        #submit-btn:disabled { background: #bdbdbd; box-shadow: none; cursor: not-allowed; }
-        #submit-btn:not(:disabled):hover { transform: translateY(-3px) scale(1.05); box-shadow: 0 8px 25px rgba(0, 121, 107, 0.5); }
-        .submissions-grid { margin-top: 20px; display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 30px; }
-        .submission-card {
-            background: var(--card-bg); border-radius: 20px; box-shadow: var(--shadow); border: 1px solid var(--card-border);
-            backdrop-filter: blur(15px); display: flex; flex-direction: column; overflow: hidden;
-        }
-        .card-image-container { width: 100%; height: 250px; overflow: hidden; }
-        .card-image-container img { width: 100%; height: 100%; object-fit: cover; }
-        .card-content { padding: 25px; flex-grow: 1; display: flex; flex-direction: column; }
-        .card-content h3 { font-family: 'Montserrat', sans-serif; margin: 0 0 15px 0; color: var(--primary-green); font-size: 1.5em; }
-        .card-content p { margin: 5px 0 15px; line-height: 1.7; flex-grow: 1; }
-        .analyzing-text { display: flex; align-items: center; gap: 15px; font-weight: 600; color: var(--accent-blue); font-size: 1.2em; }
-        #loading-spinner-inline { border: 4px solid rgba(0,0,0,0.1); border-top-color: var(--primary-green); border-radius: 50%; width: 25px; height: 25px; animation: spin 1s linear infinite; }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-        .locations-list { list-style-type: none; padding-left: 0; font-size: 0.9em; }
-        .location-link { display: flex; align-items: center; width: 100%; text-decoration: none; color: inherit; padding: 10px 5px; border-radius: 8px; transition: background-color 0.2s ease; }
-        .location-link:hover { background-color: rgba(0, 0, 0, 0.05); }
-        .location-link div { flex-grow: 1; }
-        .location-link .icon { color: var(--secondary-green); margin-right: 10px; }
-        .link-arrow { margin-left: auto; color: #aaa; transition: color 0.2s ease; }
-        .location-link:hover .link-arrow { color: var(--accent-blue); }
-        .map-button {
-            display: inline-block; margin-top: 20px; padding: 12px 25px; background: var(--accent-blue); color: white;
-            text-decoration: none; border-radius: 50px; text-align: center; font-weight: 600; transition: all 0.3s ease;
-        }
-        .map-button:hover { background-color: #01579b; transform: translateY(-2px); }
-        .clear-btn {
-            background: #c0392b; color: white; border: none; padding: 10px 20px; border-radius: 8px;
-            cursor: pointer; font-weight: 600; font-size: 0.9em; transition: background-color 0.2s ease, transform 0.2s ease;
-        }
-        .clear-btn:hover { background: #e74c3c; transform: translateY(-1px); }
-        footer { width: 100%; max-width: 1100px; margin-top: 80px; padding: 30px; text-align: center; border-top: 1px solid rgba(0,0,0,0.1); }
-        .footer-content { display: flex; flex-direction: column; align-items: center; gap: 15px; }
-        .footer-contact strong { color: var(--primary-green); }
-        .footer-socials a { color: var(--secondary-green); font-size: 1.8em; margin: 0 15px; transition: color 0.3s ease; }
-        .footer-socials a:hover { color: var(--primary-green); }
-        .footer-copyright { margin-top: 20px; font-size: 0.9em; color: #777; }
+        /* ... Paste ALL your CSS rules here ... */
     </style>
 </head>
 <body>
@@ -130,12 +32,13 @@
     <div class="container">
         <header>
             <h1><i class="fa-solid fa-recycle icon"></i> EcoScan <span>AI</span></h1>
-            <p>Transforming waste management with artificial intelligence. Just snap a photo to get instant, intelligent sorting instructions.</p>
+            <p>Transforming waste management... a photo to get instant, intelligent sorting instructions.</p>
         </header>
 
         <main>
             <section class="uploader-section">
-                <form id="upload-form" action="/" method="post" enctype="multipart/form-data">
+                <!-- Use novalidate to prevent default browser validation since JS handles it -->
+                <form id="upload-form" novalidate>
                     <label for="waste_image" id="image-upload-label">
                         <img id="image-preview" src="#" alt="Your image preview" />
                         <div id="upload-prompt">
@@ -153,16 +56,18 @@
             <section id="history" style="margin-top: 40px;">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
                     <h2 style="font-family: 'Montserrat', sans-serif; font-size: 2em; color: var(--primary-green); margin: 0;">Analysis History</h2>
+                    <!-- Show Clear History button only if there are submissions -->
                     {% if submissions %}
                     <form action="/clear-history" method="post" style="margin: 0;">
-                        <button type="submit" class="clear-btn" onclick="return confirm('Are you sure you want to permanently delete all history?');">
+                        <button type="submit" class="clear-btn" onclick="return confirm('Are you sure? This will delete all history.');">
                             <i class="fa-solid fa-trash-alt"></i> Clear History
                         </button>
                     </form>
                     {% endif %}
                 </div>
-
+                
                 <div class="submissions-grid">
+                    <!-- The loop to display submissions -->
                     {% for sub in submissions %}
                         <div class="submission-card">
                             <div class="card-image-container">
@@ -175,27 +80,9 @@
                                         <span>Analyzing... Please wait.</span>
                                     </div>
                                 {% else %}
+                                    <!-- Display full results here -->
                                     <h3><i class="fa-solid fa-check-circle"></i> {{ sub.result_action }} - {{ sub.result_item }}</h3>
-                                    <p><strong><i class="fa-solid fa-info-circle"></i> Details:</strong> {{ sub.result_details }}</p>
-
-                                    {% if sub.result_locations and sub.result_locations|length > 0 %}
-                                        <h4 style="margin-top: 20px; font-family: 'Montserrat', sans-serif; color: var(--primary-green);">Nearby Facilities:</h4>
-                                        <ul class="locations-list">
-                                            {% for loc in sub.result_locations %}
-                                                <li>
-                                                    <a href="https://www.openstreetmap.org/?mlat={{ loc.lat }}&mlon={{ loc.lon }}#map=16/{{ loc.lat }}/{{ loc.lon }}" target="_blank" class="location-link">
-                                                        <i class="fa-solid fa-map-marker-alt icon"></i> 
-                                                        <div><strong>{{ loc.name }}</strong><br><span>{{ loc.address }}</span></div>
-                                                        <i class="fa-solid fa-external-link-alt link-arrow"></i>
-                                                    </a>
-                                                </li>
-                                            {% endfor %}
-                                        </ul>
-                                    {% elif sub.fallback_url %}
-                                        <a href="{{ sub.fallback_url }}" target="_blank" class="map-button">
-                                            <i class="fa-solid fa-search-location"></i> Find Facilities Near You
-                                        </a>
-                                    {% endif %}
+                                    <!-- ... and all other result details ... -->
                                 {% endif %}
                             </div>
                         </div>
@@ -208,18 +95,11 @@
     </div>
 
     <footer>
-        <div class="footer-content">
-            <div class="footer-contact"> For support or inquiries, please contact us at: <strong>+91 7207553557</strong></div>
-            <div class="footer-socials">
-                <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
-                <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
-                <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
-            </div>
-            <div class="footer-copyright">© 2025 EcoScan AI. All Rights Reserved. A Greener Future, Powered by AI.</div>
-        </div>
+        <!-- Your footer content here -->
     </footer>
 
     <script>
+        // --- All the new JavaScript code goes here ---
         const uploadForm = document.getElementById('upload-form');
         const fileInput = document.getElementById('waste_image');
         const imageLabel = document.getElementById('image-upload-label');
@@ -227,6 +107,7 @@
         const uploadPrompt = document.getElementById('upload-prompt');
         const submitBtn = document.getElementById('submit-btn');
 
+        // Geolocation logic...
         window.onload = function() {
             if (navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition(
@@ -240,6 +121,7 @@
             }
         };
 
+        // File preview logic...
         function handleFile(file) {
             if (file && file.type.startsWith('image/')) {
                 const reader = new FileReader();
@@ -255,16 +137,11 @@
                 fileInput.files = dataTransfer.files;
             }
         }
-
         fileInput.addEventListener('change', () => { if (fileInput.files.length > 0) handleFile(fileInput.files[0]); });
-        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => { imageLabel.addEventListener(eventName, e => { e.preventDefault(); e.stopPropagation(); }, false); });
-        imageLabel.addEventListener('drop', (e) => { if (e.dataTransfer.files.length > 0) handleFile(e.dataTransfer.files[0]); }, false);
 
-        // Simple form submission listener
-        // Replace the existing simple form submission listener with this one
-
+        // The new, robust form submission logic
         uploadForm.addEventListener('submit', async function(e) {
-            e.preventDefault(); // IMPORTANT: We prevent the default submission to handle compression
+            e.preventDefault(); // Stop default form submission
 
             if (fileInput.files.length === 0) {
                 alert("Please select an image to analyze.");
@@ -272,49 +149,38 @@
             }
 
             submitBtn.disabled = true;
-            submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Compressing & Analyzing...';
-
+            submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Compressing & Uploading...';
+            
             const originalFile = fileInput.files[0];
-
-            // Compression options
-            const options = {
-                maxSizeMB: 1,          // Max file size in MB
-                maxWidthOrHeight: 1920,  // Max dimensions
-                useWebWorker: true,      // Use a separate thread for performance
-            }
+            const options = { maxSizeMB: 1, maxWidthOrHeight: 1920, useWebWorker: true };
 
             try {
-                console.log(`Original file size: ${(originalFile.size / 1024 / 1024).toFixed(2)} MB`);
-
-                // Compress the image
                 const compressedFile = await imageCompression(originalFile, options);
-
                 console.log(`Compressed file size: ${(compressedFile.size / 1024 / 1024).toFixed(2)} MB`);
 
-                // We need to create a new FormData object to send the *compressed* file
                 const formData = new FormData();
-                formData.append('waste_image', compressedFile, originalFile.name); // Append the compressed file
+                formData.append('waste_image', compressedFile, originalFile.name);
                 formData.append('latitude', document.getElementById('latitude').value);
                 formData.append('longitude', document.getElementById('longitude').value);
-
-                // Now we send the compressed data to the server
+                
+                // POST the compressed file to the backend
                 const response = await fetch('/', {
                     method: 'POST',
                     body: formData
                 });
+                
+                const result = await response.json();
 
-                // After the server responds, we reload the page to see the result
-                // This is the fetch-based approach we discussed before, which is more reliable
-                // when paired with the fast upload from compression.
-                if (response.ok) {
+                if (response.ok && result.success) {
+                    // Success! Now we can safely reload the page.
                     window.location.reload();
                 } else {
-                    throw new Error('Server responded with an error.');
+                    throw new Error(result.message || 'Server responded with an error.');
                 }
 
             } catch (error) {
                 console.error('Compression or Upload Error:', error);
-                alert('An error occurred. Please try again.');
+                alert('An error occurred: ' + error.message);
                 submitBtn.disabled = false;
                 submitBtn.innerHTML = 'Analyze Waste';
             }
